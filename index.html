@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -148,4 +148,937 @@
 
     .extra-panel {
       display: none;
-      margin-bottom
+      margin-bottom: 20px;
+    }
+
+    .extra-panel.open {
+      display: block;
+    }
+
+    .extra-header-info {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .grid-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+
+    .card-header h2 {
+      font-size: 1.05rem;
+    }
+
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cal-month-title {
+      font-weight: 700;
+      min-width: 145px;
+      text-align: center;
+      text-transform: capitalize;
+    }
+
+    .cal-weekdays, .cal-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .cal-weekdays div {
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      padding-bottom: 6px;
+    }
+
+    .day-btn {
+      min-height: 62px;
+      padding: 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .day-btn.other-month {
+      opacity: 0.4;
+      background: var(--surface-alt);
+    }
+
+    .day-btn.today {
+      border-color: var(--primary);
+      box-shadow: inset 0 0 0 1px var(--primary);
+    }
+
+    .day-btn.selected {
+      background: #eff6ff;
+      border-color: var(--primary);
+    }
+
+    .day-num {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .dots {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dot.urgente { background: var(--urgente); }
+    .dot.media { background: var(--media); }
+    .dot.pouco { background: var(--pouco); }
+
+    .legenda {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .legenda span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .task-note-input {
+      min-height: 68px;
+      resize: vertical;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .task-item {
+      border: 1px solid var(--border);
+      border-left-width: 5px;
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .task-item.urgente {
+      border-left-color: var(--urgente);
+      background: var(--urgente-bg);
+    }
+
+    .task-item.media {
+      border-left-color: var(--media);
+      background: var(--media-bg);
+    }
+
+    .task-item.pouco {
+      border-left-color: var(--pouco);
+      background: var(--pouco-bg);
+    }
+
+    .task-item.done .task-title {
+      text-decoration: line-through;
+      opacity: 0.65;
+    }
+
+    .task-note-box {
+      margin-top: 8px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px dashed rgba(107, 114, 128, 0.35);
+      font-size: 0.84rem;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .task-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .tag-prazo, .tag-pessoa {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border);
+      padding: 1px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+
+    .tag-pessoa {
+      color: #1e3a8a;
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .task-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .task-actions button {
+      padding: 5px 8px;
+      font-size: 0.78rem;
+    }
+
+    .notes-area {
+      min-height: 95px;
+      resize: vertical;
+    }
+
+    .note-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fffbeb;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .note-item p {
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+      padding: 18px 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>
+          Organizador Logística
+          <span id="syncStatus" class="status-badge">Conectando...</span>
+        </h1>
+        <p id="syncHint">Tudo o que você ou outra pessoa salvar aparece para quem abrir o link</p>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn-toggle-extra" id="toggleExtraBtn" onclick="alternarPainelExtra()">
+          Ver Todas as Tarefas
+        </button>
+        <button type="button" onclick="irParaHoje()">Hoje</button>
+        <button type="button" onclick="exportarBackup()">Exportar Backup</button>
+        <button type="button" onclick="document.getElementById('importFile').click()">Importar Backup</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarBackup(event)" />
+      </div>
+    </header>
+
+    <section class="card extra-panel" id="extraTasksPanel">
+      <div class="card-header">
+        <h2>Todas as Tarefas Pendentes</h2>
+        <button type="button" onclick="alternarPainelExtra()">Ocultar</button>
+      </div>
+      <div class="extra-header-info">
+        <p style="font-size:0.82rem; color:var(--muted);">
+          Visão geral de tudo o que ainda falta fazer, ordenado por data e horário.
+        </p>
+        <span id="pendingCountBadge" class="tag-prazo">0 pendentes</span>
+      </div>
+      <div class="task-list" id="allPendingTasksList"></div>
+    </section>
+
+    <div class="grid-main">
+      <div>
+        <section class="card">
+          <div class="card-header">
+            <h2>Calendário Mensal</h2>
+            <div class="cal-nav">
+              <button type="button" onclick="mudarMes(-1)">&lt;</button>
+              <div class="cal-month-title" id="monthTitle"></div>
+              <button type="button" onclick="mudarMes(1)">&gt;</button>
+            </div>
+          </div>
+
+          <div class="cal-weekdays">
+            <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+          </div>
+          <div class="cal-days" id="calDays"></div>
+
+          <div class="legenda">
+            <span><i class="dot urgente"></i> Urgente (Vermelho)</span>
+            <span><i class="dot media"></i> Média (Amarelo)</span>
+            <span><i class="dot pouco"></i> Pouco urgente (Verde)</span>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2>Nova Tarefa / Atividade</h2>
+          </div>
+          <form id="taskForm" onsubmit="adicionarTarefa(event)">
+            <div class="form-grid">
+              <div class="field full">
+                <label for="taskTitle">Descrição da tarefa</label>
+                <input type="text" id="taskTitle" placeholder="Ex.: Revisar material ou concluir relatório" required />
+              </div>
+
+              <div class="field">
+                <label for="taskStart">Data de início</label>
+                <input type="date" id="taskStart" required />
+              </div>
+
+              <div class="field">
+                <label for="taskEnd">Prazo final (opcional)</label>
+                <input type="date" id="taskEnd" />
+              </div>
+
+              <div class="field">
+                <label for="taskTime">Horário (ordem cronológica)</label>
+                <input type="time" id="taskTime" value="09:00" required />
+              </div>
+
+              <div class="field">
+                <label for="taskPriority">Prioridade</label>
+                <select id="taskPriority">
+                  <option value="urgente">Vermelho — Urgente</option>
+                  <option value="media" selected>Amarelo — Média</option>
+                  <option value="pouco">Verde — Pouco urgente</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <label for="taskAssignee">Atribuir para (opcional)</label>
+                <input type="text" id="taskAssignee" list="assigneesList" placeholder="Nome da pessoa responsável pela tarefa..." />
+                <datalist id="assigneesList"></datalist>
+              </div>
+
+              <div class="field full">
+                <label for="taskNote">Anotações da tarefa (opcional)</label>
+                <textarea id="taskNote" class="task-note-input" placeholder="Detalhes, passos, links ou lembretes específicos desta tarefa..."></textarea>
+              </div>
+
+              <div class="field full">
+                <button type="submit" class="btn-primary">Adicionar ao Organizador</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <div>
+        <section class="card">
+          <div class="card-header">
+            <h2 id="selectedDayTitle">Agenda do Dia</h2>
+          </div>
+          <p style="font-size:0.82rem; color:var(--muted);">
+            Atividades ordenadas por horário para o dia selecionado (incluindo tarefas em andamento dentro do prazo).
+          </p>
+          <div class="task-list" id="dayTaskList"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <h2>Cantinho de Anotações</h2>
+          </div>
+          <div class="field">
+            <textarea id="noteInput" class="notes-area" placeholder="Escreva lembretes rápidos, ideias ou observações..."></textarea>
+          </div>
+          <div style="margin-top:10px; display:flex; justify-content:flex-end;">
+            <button type="button" class="btn-primary" onclick="adicionarNota()">Salvar Anotação</button>
+          </div>
+          <div id="notesList"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyAeLMi7cJDYM9nwJbDTgQFRKFdf3-UsNBI",
+      authDomain: "organizador-87ebb.firebaseapp.com",
+      databaseURL: "https://organizador-87ebb-default-rtdb.firebaseio.com",
+      projectId: "organizador-87ebb",
+      storageBucket: "organizador-87ebb.firebasestorage.app",
+      messagingSenderId: "567453122012",
+      appId: "1:567453122012:web:d968865cfec054f4082319"
+    };
+
+    const DB_PATH = "organizador_logistica_v1";
+    const LOCAL_CACHE_KEY = "organizador_logistica_cache_v1";
+
+    function formatDateISO(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatDateBR(iso) {
+      if (!iso) return "";
+      const [y, m, d] = iso.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    const hoje = new Date();
+    const state = {
+      viewYear: hoje.getFullYear(),
+      viewMonth: hoje.getMonth(),
+      selectedDate: formatDateISO(hoje),
+      showAllPending: false,
+      tasks: [],
+      notes: []
+    };
+
+    let dbRef = null;
+    let firebaseReady = false;
+
+    function atualizarStatusBadge(texto, tipo = "") {
+      const badge = document.getElementById("syncStatus");
+      badge.textContent = texto;
+      badge.className = `status-badge ${tipo}`.trim();
+    }
+
+    function carregarCacheLocal() {
+      try {
+        const raw = localStorage.getItem(LOCAL_CACHE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state.tasks = Array.isArray(parsed.tasks) ? parsed.tasks : [];
+          state.notes = Array.isArray(parsed.notes) ? parsed.notes : [];
+        }
+      } catch (e) {
+        console.error("Erro ao ler cache local:", e);
+      }
+      document.getElementById("taskStart").value = state.selectedDate;
+    }
+
+    function salvarEstado() {
+      const payload = {
+        tasks: state.tasks,
+        notes: state.notes,
+        updatedAt: Date.now()
+      };
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(payload));
+
+      if (firebaseReady && dbRef) {
+        atualizarStatusBadge("Salvando...", "");
+        set(dbRef, payload)
+          .then(() => atualizarStatusBadge("Sincronizado", "synced"))
+          .catch(() => atualizarStatusBadge("Erro ao salvar na nuvem", "error"));
+      }
+    }
+
+    function iniciarFirebase() {
+      try {
+        const app = initializeApp(FIREBASE_CONFIG);
+        const db = getDatabase(app);
+        dbRef = ref(db, DB_PATH);
+        firebaseReady = true;
+
+        onValue(
+          dbRef,
+          (snapshot) => {
+            const val = snapshot.val();
+            if (val) {
+              state.tasks = Array.isArray(val.tasks) ? val.tasks : [];
+              state.notes = Array.isArray(val.notes) ? val.notes : [];
+              localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify({
+                tasks: state.tasks,
+                notes: state.notes
+              }));
+            }
+            atualizarStatusBadge("Sincronizado", "synced");
+            renderTudo();
+          },
+          (err) => {
+            console.error(err);
+            atualizarStatusBadge("Sem permissão no banco", "error");
+          }
+        );
+      } catch (e) {
+        console.error(e);
+        atualizarStatusBadge("Erro de conexão", "error");
+      }
+    }
+
+    function atualizarSugestoesResponsaveis() {
+      const datalist = document.getElementById("assigneesList");
+      const nomes = [...new Set(
+        state.tasks
+          .map(t => (t.assignee || "").trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+      datalist.innerHTML = nomes.map(n => `<option value="${escapeHTML(n)}"></option>`).join("");
+    }
+
+    function tarefasNoDia(dateISO) {
+      return state.tasks
+        .filter(t => {
+          const inicio = t.startDate;
+          const fim = t.endDate || t.startDate;
+          return dateISO >= inicio && dateISO <= fim;
+        })
+        .sort((a, b) => (a.time || "00:00").localeCompare(b.time || "00:00"));
+    }
+
+    window.alternarPainelExtra = function () {
+      state.showAllPending = !state.showAllPending;
+      renderPainelExtra();
+    };
+
+    function renderPainelExtra() {
+      const panel = document.getElementById("extraTasksPanel");
+      const btn = document.getElementById("toggleExtraBtn");
+      const listEl = document.getElementById("allPendingTasksList");
+      const countBadge = document.getElementById("pendingCountBadge");
+
+      const pendentes = state.tasks
+        .filter(t => !t.done)
+        .sort((a, b) => {
+          const dComp = (a.startDate || "").localeCompare(b.startDate || "");
+          if (dComp !== 0) return dComp;
+          return (a.time || "00:00").localeCompare(b.time || "00:00");
+        });
+
+      countBadge.textContent = `${pendentes.length} ${pendentes.length === 1 ? "pendente" : "pendentes"}`;
+      btn.textContent = state.showAllPending
+        ? `Ocultar Todas as Tarefas (${pendentes.length})`
+        : `Ver Todas as Tarefas (${pendentes.length})`;
+
+      panel.classList.toggle("open", state.showAllPending);
+
+      if (!state.showAllPending) return;
+
+      if (pendentes.length === 0) {
+        listEl.innerHTML = `<div class="empty">Nenhuma tarefa pendente no momento. Tudo em dia!</div>`;
+        return;
+      }
+
+      const labelPrioridade = {
+        urgente: "Urgente",
+        media: "Média",
+        pouco: "Pouco urgente"
+      };
+
+      listEl.innerHTML = pendentes.map(t => {
+        const temPrazoLongo = t.endDate && t.endDate !== t.startDate;
+        const dataInfo = temPrazoLongo
+          ? `${formatDateBR(t.startDate)} até ${formatDateBR(t.endDate)}`
+          : formatDateBR(t.startDate);
+        const pessoaBadge = t.assignee
+          ? `<span class="tag-pessoa">Responsável: ${escapeHTML(t.assignee)}</span>`
+          : "";
+        const noteHtml = t.note
+          ? `<div class="task-note-box"><strong>Anotação:</strong> ${escapeHTML(t.note)}</div>`
+          : "";
+
+        return `
+          <div class="task-item ${t.priority}">
+            <div style="flex:1; min-width:0;">
+              <div class="task-title"><strong>${dataInfo} • ${t.time}</strong> — ${escapeHTML(t.title)}</div>
+              ${noteHtml}
+              <div class="task-meta">
+                <span>Prioridade: ${labelPrioridade[t.priority] || t.priority}</span>
+                ${pessoaBadge}
+              </div>
+            </div>
+            <div class="task-actions">
+              <button type="button" onclick="irParaData('${t.startDate}')">Ver no Dia</button>
+              <button type="button" onclick="alternarConcluida('${t.id}')">Concluir</button>
+              <button type="button" class="btn-danger" onclick="excluirTarefa('${t.id}')">Excluir</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    window.irParaData = function (iso) {
+      if (!iso) return;
+      const [y, m] = iso.split("-").map(Number);
+      state.selectedDate = iso;
+      state.viewYear = y;
+      state.viewMonth = m - 1;
+      document.getElementById("taskStart").value = iso;
+      renderTudo();
+    };
+
+    function renderCalendario() {
+      const titleEl = document.getElementById("monthTitle");
+      const daysEl = document.getElementById("calDays");
+
+      const firstDay = new Date(state.viewYear, state.viewMonth, 1);
+      titleEl.textContent = firstDay.toLocaleDateString("pt-BR", { month: "long", year: "numeric" });
+
+      const startWeekday = firstDay.getDay();
+      const daysInMonth = new Date(state.viewYear, state.viewMonth + 1, 0).getDate();
+      const prevMonthDays = new Date(state.viewYear, state.viewMonth, 0).getDate();
+      const hojeISO = formatDateISO(new Date());
+
+      daysEl.innerHTML = "";
+
+      for (let i = 0; i < 42; i++) {
+        let cellDate;
+        let isOtherMonth = false;
+
+        if (i < startWeekday) {
+          const dayNum = prevMonthDays - startWeekday + i + 1;
+          cellDate = new Date(state.viewYear, state.viewMonth - 1, dayNum);
+          isOtherMonth = true;
+        } else if (i < startWeekday + daysInMonth) {
+          const dayNum = i - startWeekday + 1;
+          cellDate = new Date(state.viewYear, state.viewMonth, dayNum);
+        } else {
+          const dayNum = i - (startWeekday + daysInMonth) + 1;
+          cellDate = new Date(state.viewYear, state.viewMonth + 1, dayNum);
+          isOtherMonth = true;
+        }
+
+        const iso = formatDateISO(cellDate);
+        const dayTasks = tarefasNoDia(iso);
+        const prioridades = [...new Set(dayTasks.map(t => t.priority))];
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "day-btn";
+        if (isOtherMonth) btn.classList.add("other-month");
+        if (iso === hojeISO) btn.classList.add("today");
+        if (iso === state.selectedDate) btn.classList.add("selected");
+
+        const dotsHtml = prioridades
+          .map(p => `<span class="dot ${p}" title="${p}"></span>`)
+          .join("");
+
+        btn.innerHTML = `
+          <span class="day-num">${cellDate.getDate()}</span>
+          <div class="dots">${dotsHtml}</div>
+        `;
+
+        btn.onclick = () => {
+          state.selectedDate = iso;
+          document.getElementById("taskStart").value = iso;
+          renderTudo();
+        };
+
+        daysEl.appendChild(btn);
+      }
+    }
+
+    function renderAgendaDia() {
+      const titleEl = document.getElementById("selectedDayTitle");
+      const listEl = document.getElementById("dayTaskList");
+      titleEl.textContent = `Agenda — ${formatDateBR(state.selectedDate)}`;
+
+      const items = tarefasNoDia(state.selectedDate);
+      if (items.length === 0) {
+        listEl.innerHTML = `<div class="empty">Nenhuma atividade cadastrada para este dia.</div>`;
+        return;
+      }
+
+      const labelPrioridade = {
+        urgente: "Urgente",
+        media: "Média",
+        pouco: "Pouco urgente"
+      };
+
+      listEl.innerHTML = items.map(t => {
+        const temPrazoLongo = t.endDate && t.endDate !== t.startDate;
+        const prazoBadge = temPrazoLongo
+          ? `<span class="tag-prazo">Prazo: ${formatDateBR(t.startDate)} até ${formatDateBR(t.endDate)}</span>`
+          : "";
+        const pessoaBadge = t.assignee
+          ? `<span class="tag-pessoa">Responsável: ${escapeHTML(t.assignee)}</span>`
+          : "";
+        const noteHtml = t.note
+          ? `<div class="task-note-box"><strong>Anotação:</strong> ${escapeHTML(t.note)}</div>`
+          : "";
+
+        return `
+          <div class="task-item ${t.priority} ${t.done ? "done" : ""}">
+            <div style="flex:1; min-width:0;">
+              <div class="task-title"><strong>${t.time}</strong> — ${escapeHTML(t.title)}</div>
+              ${noteHtml}
+              <div class="task-meta">
+                <span>Prioridade: ${labelPrioridade[t.priority] || t.priority}</span>
+                ${pessoaBadge}
+                ${prazoBadge}
+              </div>
+            </div>
+            <div class="task-actions">
+              <button type="button" onclick="alternarConcluida('${t.id}')">${t.done ? "Reabrir" : "Concluir"}</button>
+              <button type="button" class="btn-danger" onclick="excluirTarefa('${t.id}')">Excluir</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    window.adicionarTarefa = function (event) {
+      event.preventDefault();
+      const title = document.getElementById("taskTitle").value.trim();
+      const startDate = document.getElementById("taskStart").value;
+      const endDate = document.getElementById("taskEnd").value;
+      const time = document.getElementById("taskTime").value;
+      const priority = document.getElementById("taskPriority").value;
+      const assignee = document.getElementById("taskAssignee").value.trim();
+      const note = document.getElementById("taskNote").value.trim();
+
+      if (!title || !startDate) return;
+
+      if (endDate && endDate < startDate) {
+        alert("O prazo final não pode ser anterior à data de início.");
+        return;
+      }
+
+      state.tasks.push({
+        id: String(Date.now()) + Math.random().toString(36).slice(2, 6),
+        title,
+        startDate,
+        endDate: endDate || startDate,
+        time: time || "09:00",
+        priority,
+        assignee,
+        note,
+        done: false
+      });
+
+      salvarEstado();
+      document.getElementById("taskTitle").value = "";
+      document.getElementById("taskEnd").value = "";
+      document.getElementById("taskAssignee").value = "";
+      document.getElementById("taskNote").value = "";
+      state.selectedDate = startDate;
+      const [y, m] = startDate.split("-").map(Number);
+      state.viewYear = y;
+      state.viewMonth = m - 1;
+      renderTudo();
+    };
+
+    window.alternarConcluida = function (id) {
+      const task = state.tasks.find(t => t.id === id);
+      if (task) {
+        task.done = !task.done;
+        salvarEstado();
+        renderTudo();
+      }
+    };
+
+    window.excluirTarefa = function (id) {
+      state.tasks = state.tasks.filter(t => t.id !== id);
+      salvarEstado();
+      renderTudo();
+    };
+
+    window.adicionarNota = function () {
+      const input = document.getElementById("noteInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      state.notes.unshift({
+        id: String(Date.now()),
+        text,
+        createdAt: new Date().toLocaleString("pt-BR")
+      });
+
+      input.value = "";
+      salvarEstado();
+      renderNotas();
+    };
+
+    window.excluirNota = function (id) {
+      state.notes = state.notes.filter(n => n.id !== id);
+      salvarEstado();
+      renderNotas();
+    };
+
+    function renderNotas() {
+      const container = document.getElementById("notesList");
+      if (state.notes.length === 0) {
+        container.innerHTML = `<div class="empty">Nenhuma anotação salva ainda.</div>`;
+        return;
+      }
+
+      container.innerHTML = state.notes.map(n => `
+        <div class="note-item">
+          <div>
+            <p>${escapeHTML(n.text)}</p>
+            <small style="color:var(--muted); font-size:0.74rem;">${escapeHTML(n.createdAt)}</small>
+          </div>
+          <button type="button" class="btn-danger" onclick="excluirNota('${n.id}')">Apagar</button>
+        </div>
+      `).join("");
+    }
+
+    window.mudarMes = function (delta) {
+      const d = new Date(state.viewYear, state.viewMonth + delta, 1);
+      state.viewYear = d.getFullYear();
+      state.viewMonth = d.getMonth();
+      renderCalendario();
+    };
+
+    window.irParaHoje = function () {
+      const now = new Date();
+      state.viewYear = now.getFullYear();
+      state.viewMonth = now.getMonth();
+      state.selectedDate = formatDateISO(now);
+      document.getElementById("taskStart").value = state.selectedDate;
+      renderTudo();
+    };
+
+    window.exportarBackup = function () {
+      const dados = JSON.stringify({ tasks: state.tasks, notes: state.notes }, null, 2);
+      const blob = new Blob([dados], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `backup-organizador-${formatDateISO(new Date())}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    window.importarBackup = function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
+          if (Array.isArray(parsed.notes)) state.notes = parsed.notes;
+          salvarEstado();
+          renderTudo();
+          alert("Backup importado com sucesso!");
+        } catch {
+          alert("Arquivo de backup inválido.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    };
+
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderTudo() {
+      atualizarSugestoesResponsaveis();
+      renderCalendario();
+      renderAgendaDia();
+      renderNotas();
+      renderPainelExtra();
+    }
+
+    carregarCacheLocal();
+    renderTudo();
+    iniciarFirebase();
+  </script>
+</body>
+</html>
