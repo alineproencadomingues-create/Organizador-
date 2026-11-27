@@ -457,7 +457,6 @@
       padding: 18px 8px;
     }
 
-    /* Modal de Edição */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -499,9 +498,9 @@
       <div class="brand">
         <h1>
           Organizador Logística
-          <span id="syncStatus" class="status-badge">Conectando...</span>
+          <span id="syncStatus" class="status-badge">Iniciando...</span>
         </h1>
-        <p id="syncHint">Tudo o que você ou outra pessoa salvar aparece para quem abrir o link • Prazos consideram apenas dias úteis (seg–sex)</p>
+        <p</p>
       </div>
       <div class="toolbar">
         <button type="button" class="btn-toggle-extra" id="toggleExtraBtn" onclick="alternarPainelExtra()">
@@ -640,183 +639,4 @@
   </div>
 
   <!-- Modal de Edição de Tarefa -->
-  <div class="modal-backdrop" id="editTaskModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-    <div class="modal-card">
-      <div class="card-header">
-        <h2 id="editModalTitle">Editar Tarefa</h2>
-        <button type="button" onclick="fecharModalEdicao()">✕</button>
-      </div>
-      <form id="editTaskForm" onsubmit="salvarEdicaoTarefa(event)">
-        <input type="hidden" id="editTaskId" />
-        <div class="form-grid">
-          <div class="field full">
-            <label for="editTaskTitle">Descrição da tarefa</label>
-            <input type="text" id="editTaskTitle" required />
-          </div>
-
-          <div class="field">
-            <label for="editTaskStart">Data de início</label>
-            <input type="date" id="editTaskStart" required />
-          </div>
-
-          <div class="field">
-            <label for="editTaskEnd">Prazo final (opcional)</label>
-            <input type="date" id="editTaskEnd" />
-            <span class="field-hint">Sábados e domingos não contam no prazo.</span>
-          </div>
-
-          <div class="field">
-            <label for="editTaskTime">Horário</label>
-            <input type="time" id="editTaskTime" required />
-          </div>
-
-          <div class="field">
-            <label for="editTaskPriority">Prioridade</label>
-            <select id="editTaskPriority">
-              <option value="urgente">Vermelho — Urgente</option>
-              <option value="media">Amarelo — Média</option>
-              <option value="pouco">Verde — Pouco urgente</option>
-            </select>
-          </div>
-
-          <div class="field full">
-            <label for="editTaskAssignee">Atribuir para (opcional)</label>
-            <input type="text" id="editTaskAssignee" list="assigneesList" />
-          </div>
-
-          <div class="field full">
-            <label for="editTaskNote">Anotações da tarefa (opcional)</label>
-            <textarea id="editTaskNote" class="task-note-input"></textarea>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" onclick="fecharModalEdicao()">Cancelar</button>
-          <button type="submit" class="btn-primary">Salvar Alterações</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
-
-    const FIREBASE_CONFIG = {
-      apiKey: "AIzaSyAeLMi7cJDYM9nwJbDTgQFRKFdf3-UsNBI",
-      authDomain: "organizador-87ebb.firebaseapp.com",
-      databaseURL: "https://organizador-87ebb-default-rtdb.firebaseio.com",
-      projectId: "organizador-87ebb",
-      storageBucket: "organizador-87ebb.firebasestorage.app",
-      messagingSenderId: "567453122012",
-      appId: "1:567453122012:web:d968865cfec054f4082319"
-    };
-
-    const DB_PATH = "organizador_logistica_v1";
-    const LOCAL_CACHE_KEY = "organizador_logistica_cache_v1";
-
-    function escapeHTML(str) {
-      return String(str ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function formatDateISO(date) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, "0");
-      const d = String(date.getDate()).padStart(2, "0");
-      return `${y}-${m}-${d}`;
-    }
-
-    function parseLocalDate(iso) {
-      if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
-      const [y, m, d] = iso.split("-").map(Number);
-      return new Date(y, m - 1, d);
-    }
-
-    function isWeekendISO(iso) {
-      const dt = parseLocalDate(iso);
-      if (!dt) return false;
-      const day = dt.getDay();
-      return day === 0 || day === 6;
-    }
-
-    function ajustarParaDiaUtil(iso, direcao = 1) {
-      let dt = parseLocalDate(iso);
-      if (!dt) return iso;
-      while (dt.getDay() === 0 || dt.getDay() === 6) {
-        dt.setDate(dt.getDate() + direcao);
-      }
-      return formatDateISO(dt);
-    }
-
-    function formatDateBR(iso) {
-      if (!iso) return "";
-      const [y, m, d] = iso.split("-");
-      return `${d}/${m}/${y}`;
-    }
-
-    function normalizarData(raw, fallbackISO) {
-      if (typeof raw === "number" && !Number.isNaN(raw)) {
-        const utcDate = new Date(Math.round((raw - 25569) * 86400 * 1000));
-        if (!Number.isNaN(utcDate.getTime())) {
-          const y = utcDate.getUTCFullYear();
-          const m = String(utcDate.getUTCMonth() + 1).padStart(2, "0");
-          const d = String(utcDate.getUTCDate()).padStart(2, "0");
-          return `${y}-${m}-${d}`;
-        }
-      }
-      const s = String(raw || "").trim();
-      if (!s) return fallbackISO;
-      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-      const brMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-      if (brMatch) {
-        const d = String(brMatch[1]).padStart(2, "0");
-        const m = String(brMatch[2]).padStart(2, "0");
-        const y = brMatch[3];
-        return `${y}-${m}-${d}`;
-      }
-      return fallbackISO;
-    }
-
-    function normalizarHora(raw) {
-      if (typeof raw === "number" && !Number.isNaN(raw)) {
-        const frac = ((raw % 1) + 1) % 1;
-        const totalMin = Math.round(frac * 24 * 60) % (24 * 60);
-        const h = String(Math.floor(totalMin / 60)).padStart(2, "0");
-        const m = String(totalMin % 60).padStart(2, "0");
-        return `${h}:${m}`;
-      }
-      const s = String(raw || "").trim();
-      if (!s) return "09:00";
-      const match = s.match(/^(\d{1,2}):(\d{2})/);
-      if (match) {
-        return `${String(match[1]).padStart(2, "0")}:${match[2]}`;
-      }
-      return "09:00";
-    }
-
-    function normalizarPrioridade(raw) {
-      const s = String(raw || "").trim().toLowerCase();
-      if (["urgente", "vermelho", "alta", "high"].includes(s)) return "urgente";
-      if (["pouco", "pouco urgente", "verde", "baixa", "low"].includes(s)) return "pouco";
-      return "media";
-    }
-
-    function detectarSeparador(linha) {
-      const tabCount = (linha.match(/\t/g) || []).length;
-      const semiCount = (linha.match(/;/g) || []).length;
-      const commaCount = (linha.match(/,/g) || []).length;
-      if (tabCount >= semiCount && tabCount >= commaCount && tabCount > 0) return "\t";
-      if (semiCount >= commaCount && semiCount > 0) return ";";
-      return ",";
-    }
-
-    function parseLinhaCSV(linha, sep) {
-      const cols = [];
-      let atual = "";
-      let emAspas = false;
-      for (let i = 0; i < linha.length;
+  <div class
