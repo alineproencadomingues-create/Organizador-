@@ -461,12 +461,16 @@
           Organizador Logística
           <span id="syncStatus" class="status-badge">Conectando...</span>
         </h1>
+        <p id="syncHint">Tudo o que você ou outra pessoa salvar aparece para quem abrir o link</p>
       </div>
       <div class="toolbar">
         <button type="button" class="btn-toggle-extra" id="toggleExtraBtn" onclick="alternarPainelExtra()">
           Ver Todas as Tarefas
         </button>
         <button type="button" onclick="irParaHoje()">Hoje</button>
+        <button type="button" onclick="baixarModeloCSV()">Modelo CSV</button>
+        <button type="button" onclick="document.getElementById('importCsvFile').click()">Importar CSV / Excel</button>
+        <input type="file" id="importCsvFile" accept=".csv,.txt,.tsv" style="display:none" onchange="importarCSV(event)" />
         <button type="button" onclick="exportarBackup()">Exportar Backup</button>
         <button type="button" onclick="document.getElementById('importFile').click()">Importar Backup</button>
         <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarBackup(event)" />
@@ -578,7 +582,7 @@
 
         <section class="card">
           <div class="card-header">
-            <h2>Anotações</h2>
+            <h2>Cantinho de Anotações</h2>
           </div>
           <div class="field">
             <textarea id="noteInput" class="notes-area" placeholder="Escreva lembretes rápidos, ideias ou observações..."></textarea>
@@ -621,6 +625,179 @@
       const [y, m, d] = iso.split("-");
       return `${d}/${m}/${y}`;
     }
+
+    function normalizarData(raw, fallbackISO) {
+      const s = String(raw || "").trim();
+      if (!s) return fallbackISO;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      const brMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (brMatch) {
+        const d = String(brMatch[1]).padStart(2, "0");
+        const m = String(brMatch[2]).padStart(2, "0");
+        const y = brMatch[3];
+        return `${y}-${m}-${d}`;
+      }
+      return fallbackISO;
+    }
+
+    function normalizarHora(raw) {
+      const s = String(raw || "").trim();
+      if (!s) return "09:00";
+      const match = s.match(/^(\d{1,2}):(\d{2})/);
+      if (match) {
+        return `${String(match[1]).padStart(2, "0")}:${match[2]}`;
+      }
+      return "09:00";
+    }
+
+    function normalizarPrioridade(raw) {
+      const s = String(raw || "").trim().toLowerCase();
+      if (["urgente", "vermelho", "alta", "high"].includes(s)) return "urgente";
+      if (["pouco", "pouco urgente", "verde", "baixa", "low"].includes(s)) return "pouco";
+      return "media";
+    }
+
+    function detectarSeparador(linha) {
+      const tabCount = (linha.match(/\t/g) || []).length;
+      const semiCount = (linha.match(/;/g) || []).length;
+      const commaCount = (linha.match(/,/g) || []).length;
+      if (tabCount >= semiCount && tabCount >= commaCount && tabCount > 0) return "\t";
+      if (semiCount >= commaCount && semiCount > 0) return ";";
+      return ",";
+    }
+
+    function parseLinhaCSV(linha, sep) {
+      const cols = [];
+      let atual = "";
+      let emAspas = false;
+      for (let i = 0; i < linha.length; i++) {
+        const ch = linha[i];
+        if (ch === '"') {
+          if (emAspas && linha[i + 1] === '"') {
+            atual += '"';
+            i++;
+          } else {
+            emAspas = !emAspas;
+          }
+        } else if (ch === sep && !emAspas) {
+          cols.push(atual.trim());
+          atual = "";
+        } else {
+          atual += ch;
+        }
+      }
+      cols.push(atual.trim());
+      return cols;
+    }
+
+    function normalizarCabecalho(h) {
+      return String(h || "")
+        .replace(/^\uFEFF/, "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, "_");
+    }
+
+    window.baixarModeloCSV = function () {
+      const exemplo = [
+        "descricao,data_inicio,data_fim,horario,prioridade,responsavel,anotacao",
+        `"Conferir romaneio de carga","${state.selectedDate}","${state.selectedDate}","09:00","urgente","João","Verificar nota fiscal"`
+      ].join("\r\n");
+      const blob = new Blob(["\uFEFF" + exemplo], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "modelo-tarefas-pendentes.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    window.importarCSV = function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const texto = String(reader.result || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+          const linhas = texto.split("\n").filter(l => l.trim() !== "");
+          if (linhas.length === 0) {
+            alert("O arquivo CSV está vazio.");
+            return;
+          }
+
+          const sep = detectarSeparador(linhas[0]);
+          const primeiraCols = parseLinhaCSV(linhas[0], sep).map(normalizarCabecalho);
+          const temCabecalho = primeiraCols.some(c =>
+            ["descricao", "titulo", "tarefa", "task", "data_inicio", "inicio", "horario", "hora", "prioridade", "responsavel", "anotacao", "nota"].includes(c)
+          );
+
+          const colMap = {};
+          if (temCabecalho) {
+            primeiraCols.forEach((nome, idx) => {
+              colMap[nome] = idx;
+            });
+          }
+
+          const inicioLinhas = temCabecalho ? 1 : 0;
+          let adicionadas = 0;
+
+          for (let i = inicioLinhas; i < linhas.length; i++) {
+            const cols = parseLinhaCSV(linhas[i], sep);
+            if (cols.every(c => !c)) continue;
+
+            const idxDesc = colMap.descricao ?? colMap.titulo ?? colMap.tarefa ?? colMap.task ?? 0;
+            const idxInicio = colMap.data_inicio ?? colMap.inicio ?? colMap.data ?? 1;
+            const idxFim = colMap.data_fim ?? colMap.fim ?? colMap.prazo ?? 2;
+            const idxHora = colMap.horario ?? colMap.hora ?? colMap.time ?? 3;
+            const idxPrio = colMap.prioridade ?? colMap.priority ?? 4;
+            const idxResp = colMap.responsavel ?? colMap.atribuido ?? colMap.pessoa ?? 5;
+            const idxNota = colMap.anotacao ?? colMap.nota ?? colMap.observacao ?? 6;
+
+            const title = String(cols[idxDesc] || "").trim();
+            if (!title) continue;
+
+            const startDate = normalizarData(cols[idxInicio], state.selectedDate);
+            const rawEnd = String(cols[idxFim] || "").trim();
+            let endDate = rawEnd ? normalizarData(rawEnd, startDate) : startDate;
+            if (endDate < startDate) endDate = startDate;
+
+            const time = normalizarHora(cols[idxHora]);
+            const priority = normalizarPrioridade(cols[idxPrio]);
+            const assignee = String(cols[idxResp] || "").trim();
+            const note = String(cols[idxNota] || "").trim();
+
+            state.tasks.push({
+              id: String(Date.now()) + Math.random().toString(36).slice(2, 6),
+              title,
+              startDate,
+              endDate,
+              time,
+              priority,
+              assignee,
+              note,
+              done: false
+            });
+            adicionadas++;
+          }
+
+          if (adicionadas === 0) {
+            alert("Nenhuma tarefa válida encontrada no arquivo.");
+            return;
+          }
+
+          salvarEstado();
+          renderTudo();
+          alert(`${adicionadas} ${adicionadas === 1 ? "tarefa pendente importada" : "tarefas pendentes importadas"} com sucesso!`);
+        } catch (err) {
+          console.error(err);
+          alert("Não foi possível ler o arquivo CSV/Excel.");
+        }
+      };
+      reader.readAsText(file, "UTF-8");
+      event.target.value = "";
+    };
 
     const hoje = new Date();
     const state = {
