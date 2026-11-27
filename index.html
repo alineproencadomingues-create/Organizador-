@@ -489,6 +489,96 @@
       </div>
       <div class="extra-header-info">
         <p style="font-size:0.82rem; color:var(--muted);">
-          Visão geral de tudo o que ainda falta fazer, ordenado por data e horário.
+          Visão geral de tudo o que ainda falta fazer, ordenado por data e horário (prazos em dias úteis, sem sábado e domingo).
         </p>
-        <span id="pendingCountBadge" class
+        <span id="pendingCountBadge" class="tag-prazo">0 pendentes</span>
+      </div>
+      <div class="task-list" id="allPendingTasksList"></div>
+    </section>
+
+    <div class="grid-main">
+      <div>
+        <section class="card">
+          <div class="card-header">
+            <h2>Calendário Mensal</h2>
+            <div class="cal-nav">
+              <button type="button" onclick="mudarMes(-1)">&lt;</button>
+              <div class="cal-month-title" id="monthTitle"></div>
+              <button type="button" onclick="mudarMes(1)">&gt;</button>
+            </div>
+          </div>
+
+          <div class="cal-weekdays">
+            <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+          </div>
+          <div class="cal-days" id="calDays"></div>
+
+          <div class="legenda">
+            <span><i class="dot urgente"></i> Urgente (Vermelho)</span>
+            <span><i class="dot media"></i> Média (Amarelo)</span>
+            <span><i class="dot pouco"></i> Pouco urgente (Verde)</span>
+          </div>
+        </section>
+
+        <section class="card" id="taskFormCard">
+          <div class="card-header">
+            <h2 id="taskFormTitle">Nova Tarefa / Atividade</h2>
+          </div>
+          <form id="taskForm" onsubmit="salvarTarefaForm(event)">
+            <input type="hidden" id="editingTaskId" value="" />
+            <div class="form-grid">
+              <div class="field full">
+                <label for="taskTitle">Descrição da tarefa</label>
+                <input type="text" id="taskTitle" placeholder="Ex.: Revisar material ou concluir relatório" required />
+              </div>
+
+              <div class="field">
+                <label for="taskStart">Data de início</label>
+                <input type="date" id="taskStart" required />
+              </div>
+
+              <div class="field">
+                <label for="taskEnd">Prazo final (opcional — dias úteis)</label>
+                <input type="date" id="taskEnd" />
+              </div>
+
+              <div class="field">
+                <label for="taskTime">Horário (ordem cronológica)</label>
+                <input type="time" id="taskTime" value="09:00" required />
+              </div>
+
+              <div class="field">
+                <label for="taskPriority">Prioridade</label>
+                <select id="taskPriority">
+                  <option value="urgente">Vermelho — Urgente</option>
+                  <option value="media" selected>Amarelo — Média</option>
+                  <option value="pouco">Verde — Pouco urgente</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <label for="taskAssignee">Atribuir para (opcional)</label>
+                <input type="text" id="taskAssignee" list="assigneesList" placeholder="Nome da pessoa responsável pela tarefa..." />
+                <datalist id="assigneesList"></datalist>
+              </div>
+
+              <div class="field full">
+                <label for="taskNote">Anotações da tarefa (opcional)</label>
+                <textarea id="taskNote" class="task-note-input" placeholder="Detalhes, passos, links ou lembretes específicos desta tarefa..."></textarea>
+              </div>
+
+              <div class="field full" style="display:flex; gap:8px; flex-direction:row;">
+                <button type="submit" id="taskSubmitBtn" class="btn-primary" style="flex:1;">Adicionar ao Organizador</button>
+                <button type="button" id="cancelEditBtn" onclick="cancelarEdicao()" style="display:none;">Cancelar Edição</button>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <div>
+        <section class="card">
+          <div class="card-header">
+            <h2 id="selectedDayTitle">Agenda do Dia</h2>
+          </div>
+          <p style="font-size:0.82rem;
